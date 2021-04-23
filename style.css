@@ -6,7 +6,8 @@
     --color-white: #ffffff;
     --color-black: #3f454d;
     --color-light-grey: #ecedec;
-    --color-rest: blue;
+    --color-rest: #4db6ac;
+    --color-rest-light: #82e9de;
 
     /* size */
     --timer-font-size: 80px;
@@ -45,6 +46,13 @@ body {
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: 100;
     font-size: var(--timer-font-size);
+}
+
+.timer.rest {
+    color: var(--color-rest);
+}
+
+.timer.focus {
     color: var(--color-primary);
 }
 
@@ -55,6 +63,13 @@ h1 {
     font-weight: 700;
     bottom: var(--basic-space);
     margin: 0;
+}
+
+h1.rest {
+    color: var(--color-rest);
+}
+
+h1.focus {
     color: var(--color-primary);
 }
 
@@ -69,7 +84,6 @@ h1 {
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: 700;
     font-size: var(--button-font-size);
-    background-color: transparent;
     color: var(--color-white);
     border: none;
     outline: none;
@@ -80,9 +94,15 @@ h1 {
     padding-right: 15px;
     padding-bottom: 7px;
     border-radius: 10px;
-    background-color: var(--color-light);
-    border-color: var(--color-light);
     transition: transform var(--animation-speed) ease;
+}
+
+.btn.rest {
+    background-color: var(--color-rest-light);
+}
+
+.btn.focus {
+    background-color: var(--color-light);
 }
 
 .btn:hover {
