@@ -56,6 +56,8 @@ function onButtonClick(event) {
         clearInterval(getTimer);
         pomodoroTime = 1500;
         printPomodoroTimer();
+        startBtn.innerHTML = 'start';
+        startBtn.value = 'start';
         return;
     }
 }
