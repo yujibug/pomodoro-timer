@@ -2,13 +2,65 @@
 const title = document.querySelector('.title');
 const timer = document.querySelector('.timer');
 const btn = document.querySelectorAll('.btn');
-let getTimer = null;
+const audio = new Audio('./sound/oh.mp3');
 
-let focusTime = 10;
-let restTime = 5;
-let timerTime = null;
+let getTimer = null;
+let focusTime = 1499;
+let restTime = 300;
 let min = '';
 let sec = '';
+
+function printfocusTimer() {
+    min = parseInt(focusTime / 60);
+    sec = focusTime % 60;
+    timer.innerHTML = `${min < 10 ? `0${min}` : min}:${
+        sec < 10 ? `0${sec}` : sec
+    }`;
+    focusTime--;
+
+    if (focusTime < 0) {
+        audio.play();
+        notify('', './image/tomato.png', '달콤한 휴식!');
+        classChange('rest', 'focus');
+        clearInterval(getTimer);
+        setTimeout(() => {
+            restTime = 300;
+            printRestTimer(restTime);
+            getTimer = setInterval(printRestTimer, 1000);
+        }, 1000);
+    }
+}
+
+function printRestTimer() {
+    min = parseInt(restTime / 60);
+    sec = restTime % 60;
+    timer.innerHTML = `${min < 10 ? `0${min}` : min}:${
+        sec < 10 ? `0${sec}` : sec
+    }`;
+    restTime--;
+
+    if (restTime < 0) {
+        audio.play();
+        notify('', './image/tomato.png', '일해라!');
+        classChange('focus', 'rest');
+        clearInterval(getTimer);
+        setTimeout(() => {
+            focusTime = 1500;
+            printfocusTimer(focusTime);
+            getTimer = setInterval(printfocusTimer, 1000);
+        }, 1000);
+    }
+}
+
+function notify(msg, iconImage, theTitle) {
+    let options = {
+        body: msg,
+        icon: iconImage,
+    };
+    let notification = new Notification(theTitle, options);
+
+    setTimeout(() => notification.close(), 3000);
+}
 
 function classChange(text, text2) {
     btn[0].classList.add(text);
@@ -19,49 +71,6 @@ function classChange(text, text2) {
     btn[1].classList.remove(text2);
     title.classList.remove(text2);
     timer.classList.remove(text2);
-}
-
-function printfocusTimer(time) {
-    console.log('focus timer 함수 실행중');
-    min = parseInt(focusTime / 60);
-    sec = focusTime % 60;
-    timer.innerHTML = `${min < 10 ? `0${min}` : min}:${
-        sec < 10 ? `0${sec}` : sec
-    }`;
-    focusTime--;
-    // console.log(`매개변수 time: ${time}`);
-    // console.log(`변수 focusTime: ${focusTime}`);
-    // console.log(`temp 변수: ${timerTime}`);
-
-    if (focusTime < 0) {
-        classChange('rest', 'focus');
-        clearInterval(getTimer);
-        setTimeout(() => {
-            restTime = 5;
-            printRestTimer(restTime);
-            getTimer = setInterval(printRestTimer, 1000);
-        }, 1000);
-    }
-}
-
-function printRestTimer() {
-    console.log('rest timer 함수 실행중');
-    min = parseInt(restTime / 60);
-    sec = restTime % 60;
-    timer.innerHTML = `${min < 10 ? `0${min}` : min}:${
-        sec < 10 ? `0${sec}` : sec
-    }`;
-    restTime--;
-
-    if (restTime < 0) {
-        classChange('focus', 'rest');
-        clearInterval(getTimer);
-        setTimeout(() => {
-            focusTime = 10;
-            printfocusTimer(focusTime);
-            getTimer = setInterval(printfocusTimer, 1000);
-        }, 1000);
-    }
 }
 
 function setEventListeners() {
@@ -86,7 +95,9 @@ function onButtonClick(event, time, fuc) {
     const startBtn = document.querySelector('.start');
     const value = event.target.value;
     if (value === 'start') {
-        // fuc(time);
+        focusTime++;
+        restTime++;
+        fuc(time);
         getTimer = setInterval(fuc, 1000);
         startBtn.innerHTML = 'pause';
         startBtn.value = 'pause';
@@ -102,8 +113,8 @@ function onButtonClick(event, time, fuc) {
 
     if (value == 'reset') {
         clearInterval(getTimer);
-        focusTime = 10;
-        restTime = 5;
+        focusTime = 1500;
+        restTime = 300;
         fuc(time);
         startBtn.innerHTML = 'start';
         startBtn.value = 'start';
@@ -112,9 +123,7 @@ function onButtonClick(event, time, fuc) {
 }
 
 const init = function () {
-    /* if css 속성 = x 면 setEventListeners(focusTime) 해서 
-    매개변수로 time 넘겨서 onButtonClick 함수 재활용
-    restTime 으로 진입하면 h1 pomodoro 글자 색을 바꿀것임*/
+    Notification.requestPermission();
     setEventListeners();
 };
 
